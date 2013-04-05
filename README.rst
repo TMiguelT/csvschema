@@ -51,13 +51,15 @@ More about columns
 ------------------
 There are three types of columns. Their behavior can be altered by some additional keyword arguments:
 
-:StringColumn([blank, min_length, max_length]):
+:StringColumn([blank, min_length, max_length, permissible_values]):
    - blank
        If set to ``True`` column does not has to be filled
    - min_length
        Value can not be shorter that ``min_length``
    - max_length
        Maximal lenght of value
+   - permissible_values
+       List of allowed values
 
 :IntColumn([blank, min_exclusive, max_exclusive, min_inclusive, max_inclusive]):
    - blank
