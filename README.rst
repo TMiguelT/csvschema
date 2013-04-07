@@ -2,7 +2,7 @@
 CsvSchema
 ==========
 
-CsvSchema is easy to use module designed to make CSV file checking easier. It allows to create more complex validation rules faster thanks to 
+CsvSchema is easy to use module designed to make CSV file checking easier. It allows to create more complex validation rules faster thanks to
 some predefined building blocks.
 
 Basics
@@ -18,14 +18,14 @@ Example::
     DecimalColumn,
     StringColumn,
   )
-  
+
   class TestCsvStructure(BaseCsvStructure):
-     
+
      a = StringColumn()
      b = IntColumn()
      c = DecimalColumn()
 
-In above example we defined CSV schema class that represents file with three columns. First column may contain any kind of characters. 
+In above example we defined CSV schema class that represents file with three columns. First column may contain any kind of characters.
 Second allows only numerical values and third one may contain only decimal values.
 
 **NOTE**:
@@ -97,14 +97,14 @@ Remember that you can always make your own columns by simply subclassing ``csv_s
 
    from csv_schema.columns.base import BaseColumn
    from csv_schema.exceptions import ImproperValueRestrictionException
-   
+
    class MyColumn(BaseColumn):
-   
+
       value_template = ''  # Regular expression describing how proper value should look like in CSV file
-   
+
       def convert(self, raw_val):  # This method is called in order to transform raw value into Python object
          return None
-     
+
       def check_restriction(self, value):  # This method is optional. It allows you to specify keyword arguments that can alter column behavior.
          required_value = self.options.get('required_value', None)
          if required_value is not None:
@@ -116,7 +116,7 @@ Remember that you can always make your own columns by simply subclassing ``csv_s
 Column set
 ----------
 Till now you have seen how to use CsvSchema for simple CSV file description. Sometimes specifying types of columns and their behavior just is not enough.
-What if you would like to describe more complex validation rules? Let's say that you want a validation rule that says: you have to fill 
+What if you would like to describe more complex validation rules? Let's say that you want a validation rule that says: you have to fill
 column A or column B or both of them. This is the situation when you need ``Cs`` objects.
 
 ``Cs`` stands for *Column Set* and allows you to express more complex validation rules by simply combining ``Cs`` with use of some logic operators.
@@ -125,12 +125,15 @@ Let's consider simple validation rule that we mentioned earlier: you have to fil
    from csv_schema.structure.set import Cs
 
    class TestCsvStructure(BaseCsvStructure):
-   
+
       a = IntColumn(blank=True)
       b = IntColumn(blank=True)
 
-      rules = Cs('a') | Cs('b')
+      class Rules(object):
+         a_or_b_rule = Cs('a') | Cs('b')
 
+
+*Changed in 1.1.0: CsvSchema will now store rules in special inner class - Rules*
 
 **NOTE**:
    If you are going to use column sets remeber to set columns used in ``Cs`` instances as **blank**.
@@ -138,7 +141,7 @@ Let's consider simple validation rule that we mentioned earlier: you have to fil
 Each ``Cs`` instance has assigned columns that needs to be filled in order to *evaluate* ``Cs`` as *true*. In our example each ``Cs`` instance has
 only one column but you can assign them as many as you need. For example, if you create ``Cs`` instance like this::
 
-   Cs('a', 'b') 
+   Cs('a', 'b')
 
 will mean that you want **both** column, ``a`` and ``b`` to be filled because ``Cs`` will *evaluate true* only if **every** column in set is filled.
 We used ``|`` operator to combine two ``Cs``. ``|`` can be referred as rule that demands at least one ``Cs`` instance to be evaluated as *true*.
@@ -146,23 +149,27 @@ We used ``|`` operator to combine two ``Cs``. ``|`` can be referred as rule that
 and fill both columns the whole expression will be evaluated as *false*.
 
 **NOTE**:
-   Defined rules are evaluated during is_valid() call and their error messages are added to structure ``errors`` attribute. If custom error message
+   Defined rules are evaluated during ``is_valid()`` call and their error messages are added to structure ``errors`` attribute. If custom error message
    is not appropriate to your needs you can override it by calling ``error`` method on whole rule::
-   
+
       ...
-      rules = (Cs('a') | Cs('b')).error('Column A or B needs to be filled')
+      class Rules(object):
+         a_or_b_rule = (Cs('a') | Cs('b')).error('Column A or B needs to be filled')
       ...
 
 If you want to define more than one rule in single structure class you can do it like this::
 
    ...
-   rules = [Cs('a') | Cs('b'), Cs('c') ^ (Cs('d') | Cs('e'))]
+   class Rules(object):
+      rule_1 = Cs('a') | Cs('b')
+      rule_2 = Cs('c') ^ (Cs('d') | Cs('e'))
    ...
 
 Similarly as columns, ``Cs`` behavior can be altered by keyword arguments::
 
    ...
-   rules = Cs('a', b='B')
+   class Rules(object):
+      rule = Cs('a', b='B')
    ...
 
 In above example ``Cs`` instance will be evaluated *true* if column ``a`` is filled and column ``b`` has value equal to ``'B'``.
@@ -196,11 +203,10 @@ Notice that when column ``b`` is empty or has wrong value column ``a`` can not b
 
 **NOTE**:
    Rememer that you can have more than one value condition in ``Cs``. Creating object like this::
-   
+
       Cs('a', b='B', c='C')
-   
+
    will make it *true* if ``b`` is equal to ``'B'`` **and** ``c`` is equal to ``'C'`` (and of course, ``a`` is not empty).
    You can even demand that particular column has to have specific value::
-   
+
       Cs('a', a='A')
-    

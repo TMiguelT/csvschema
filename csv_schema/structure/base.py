@@ -6,6 +6,7 @@ from csv_schema.exceptions import (
     ImproperValueException,
     ImproperValueRestrictionException,
 )
+from csv_schema.structure.set import Cs
 
 
 class BaseCsvStructureMeta(type):
@@ -26,7 +27,8 @@ class BaseCsvStructure(object):
 
     __metaclass__ = BaseCsvStructureMeta
 
-    rules = None
+    class Rules(object):  # Inner class used for containing schema rules
+        pass
 
     def __init__(self, data, line_no):
         """
@@ -55,6 +57,19 @@ class BaseCsvStructure(object):
             except (ImproperValueException, ImproperValueRestrictionException) as e:
                 self.errors.append(u'Line %d, column %d: %s' % (self.line_no, index, e.message))
 
+    def _extract_rules(self):
+        """Search self.Rules for defined schema rules.
+
+        :returns: extracted rules objects
+        :rtype: list
+
+        """
+        rules = []
+        for _, probable_cs in vars(self.Rules).items():
+            if isinstance(probable_cs, Cs):
+                rules.append(probable_cs)
+        return rules
+
     def _handel_rule(self, rule):
         """Execute single rule and handle it result.
 
@@ -69,12 +84,8 @@ class BaseCsvStructure(object):
         """Check data dependencies.
         Method does not return anything, it only adds errors messages to self.errors.
         """
-        if self.rules:
-            if type(self.rules) is list:
-                for rule in self.rules:
-                    self._handel_rule(rule)
-            else:
-                self._handel_rule(self.rules)
+        for rule in self._extract_rules():
+            self._handel_rule(rule)
 
     def is_valid(self):
         """Check if data in schema are correct.

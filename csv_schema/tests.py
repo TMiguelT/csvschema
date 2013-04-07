@@ -145,7 +145,9 @@ class CsUseTestCase(unittest.TestCase):
         b = IntColumn(blank=True)
         c = DecimalColumn(blank=True)
 
-        rules = [(Cs('a')|Cs('b')).error('A or B'), Cs('c', b=87)]
+        class Rules(object):
+            rule_1 = (Cs('a')|Cs('b')).error('A or B')
+            rule_2 = Cs('c', b=87)
 
     def test_good_data(self):
         csv_structure = self.TestCsvStructure(['A', '', ''], 1)
