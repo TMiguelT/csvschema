@@ -8,7 +8,7 @@ from csv_schema.exceptions import ImproperValueRestrictionException
 
 class IntColumn(BaseColumn):
 
-    value_template = '^-?\d*$'
+    value_template = '^(-\d)?\d*$'
 
     def convert(self, raw_val):
         return int(raw_val)
@@ -40,7 +40,7 @@ class IntColumn(BaseColumn):
 
 class DecimalColumn(IntColumn):
 
-    value_template = '^-?\d*\.?\d*$'
+    value_template = '^(-\d)?\d*\.?\d*$'
 
     def convert(self, raw_val):
         return Decimal(raw_val)
