@@ -10,7 +10,7 @@ except IOError:
 
 setup(
     name='CsvSchema',
-    version='1.1.0',
+    version='1.1.1',
     author='Piotr Olejarz',
     author_email='vadwook@hotmail.com',
     url='http://bitbucket.org/vadwook/csvschema/',
