@@ -10,10 +10,10 @@ except IOError:
 
 setup(
     name='CsvSchema',
-    version='1.1.1',
-    author='Piotr Olejarz',
-    author_email='vadwook@hotmail.com',
-    url='http://bitbucket.org/vadwook/csvschema/',
+    version='1.1.2',
+    author='Michael Milton',
+    author_email='ttmigueltt@gmail.com',
+    url='https://github.com/TMiguelT/csvschema',
     packages=['csv_schema', 'csv_schema.columns', 'csv_schema.structure'],
     license='LICENSE.txt',
     description='Module for describing CSV data structure.',
@@ -24,6 +24,7 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
         'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3',
         'Topic :: Software Development',
         'Topic :: Text Processing',
     ],

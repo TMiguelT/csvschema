@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from builtins import str
+from builtins import object
 import unittest
 
 from csv_schema.structure.base import BaseCsvStructure

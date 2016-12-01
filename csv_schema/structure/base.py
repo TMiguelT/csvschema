@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 
 
+from builtins import object
 from csv_schema.columns.base import BaseColumn
 from csv_schema.exceptions import (
     ImproperValueException,
     ImproperValueRestrictionException,
 )
 from csv_schema.structure.set import Cs
+from future.utils import with_metaclass
 
 
 class BaseCsvStructureMeta(type):
@@ -15,17 +17,15 @@ class BaseCsvStructureMeta(type):
 
     def __new__(cls, name, bases, attrs):
         """Dodaje liste z posortowanymi w kolejnosci definicji polami"""
-        tmp_list = [(name, obj._instance_counter) for name, obj in attrs.items() if isinstance(obj, BaseColumn)]
+        tmp_list = [(name, obj._instance_counter) for name, obj in list(attrs.items()) if isinstance(obj, BaseColumn)]
         tmp_list.sort(key=lambda t: t[1])
         attrs['column_order'] = [t[0] for t in tmp_list]
         return super(BaseCsvStructureMeta, cls).__new__(cls, name, bases, attrs)
 
 
-class BaseCsvStructure(object):
+class BaseCsvStructure(with_metaclass(BaseCsvStructureMeta, object)):
 
     """Base for classes that describe line structure in CSV file."""
-
-    __metaclass__ = BaseCsvStructureMeta
 
     class Rules(object):  # Inner class used for containing schema rules
         pass
@@ -65,7 +65,7 @@ class BaseCsvStructure(object):
 
         """
         rules = []
-        for _, probable_cs in vars(self.Rules).items():
+        for _, probable_cs in list(vars(self.Rules).items()):
             if isinstance(probable_cs, Cs):
                 rules.append(probable_cs)
         return rules

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from builtins import object
 import re
 
 from csv_schema.exceptions import ImproperValueException

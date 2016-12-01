@@ -2,6 +2,8 @@
 
 """Modul containing utility used in describing simple dependencies between columns."""
 
+from builtins import str
+from builtins import object
 __all__ = ['Cs']
 
 
@@ -139,7 +141,7 @@ class Cs(object):
         :rtype: bool
 
         """
-        for key, value in self.expected_values.items():
+        for key, value in list(self.expected_values.items()):
             if col_data[key] != value:
                 return False
         return True
