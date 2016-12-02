@@ -95,13 +95,13 @@ There are three types of columns. Their behavior can be altered by some addition
    ``min_inclusive`` or ``max_inclusive``.
 
 :DateTimeColumn([earliest, latest, format]):
-  - earliest
-      The earliest date this column will accept, inclusive
-  - latest
-      The latest date this column will accept, inclusive
-  - format
-      The datetime format string indicating what kind of date is valid. Refer to the
-      `datetime.strptime documentation <https://docs.python.org/3/tutorial/errors.html>`
+   - earliest
+       The earliest date this column will accept, inclusive
+   - latest
+       The latest date this column will accept, inclusive
+   - format
+       The datetime format string indicating what kind of date is valid. Refer to the
+       `datetime.strptime documentation <https://docs.python.org/3/tutorial/errors.html>`_
 
 Remember that you can always make your own columns by simply subclassing ``csv_schema.columns.base.BaseColumn``::
 
