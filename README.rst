@@ -90,10 +90,6 @@ There are three types of columns. Their behavior can be altered by some addition
    - total_digits
        Total number of digits in whole value (before and after comma)
 
-**NOTE**:
-   ``DecimalColumn`` operates on ``decimal.Decimal`` objects. Have that in mind when you will be setting ``min_exclusive``, ``max_exclusive``,
-   ``min_inclusive`` or ``max_inclusive``.
-
 :DateTimeColumn([earliest, latest, format]):
    - earliest
        The earliest date this column will accept, inclusive
@@ -101,7 +97,11 @@ There are three types of columns. Their behavior can be altered by some addition
        The latest date this column will accept, inclusive
    - format
        The datetime format string indicating what kind of date is valid. Refer to the
-       `datetime.strptime documentation <https://docs.python.org/3/tutorial/errors.html>`_
+       `datetime.strptime documentation <https://docs.python.org/3/library/datetime.html#strftime-and-strptime-behavior>`_
+
+**NOTE**:
+   ``DecimalColumn`` operates on ``decimal.Decimal`` objects. Have that in mind when you will be setting ``min_exclusive``, ``max_exclusive``,
+   ``min_inclusive`` or ``max_inclusive``.
 
 Remember that you can always make your own columns by simply subclassing ``csv_schema.columns.base.BaseColumn``::
 
