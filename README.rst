@@ -2,13 +2,13 @@
 CsvSchema
 ==========
 
-CsvSchema is an easy to use module designed to make CSV file checking easier. It allows for the fast creation of complex
+CsvSchema is an easy-to-use module designed to make CSV file checking easier. It allows for the fast creation of complex
 validation rules faster using some predefined building blocks.
 
 Basics
 ------
 Fundamentally, CsvSchema allows you to describe what a correct CSV file should look like.
-In order to do that you will need to implement a subclass of ``csv_schema.structure.BaseCsvStructure``.
+In order to do this you will need to implement a subclass of ``csv_schema.structure.BaseCsvStructure``.
 
 Example::
 
@@ -95,13 +95,13 @@ There are three types of columns. Their behavior can be altered by some addition
    ``min_inclusive`` or ``max_inclusive``.
 
 :DateTimeColumn([earliest, latest, format]):
-   - earliest
-       The earliest date this column will accept, inclusive
+  - earliest
+      The earliest date this column will accept, inclusive
   - latest
       The latest date this column will accept, inclusive
-   - format
-       The datetime format string indicating what kind of date is valid. Refer to the
-       `datetime.strptime documentation <https://docs.python.org/3/tutorial/errors.html>`
+  - format
+      The datetime format string indicating what kind of date is valid. Refer to the
+      `datetime.strptime documentation <https://docs.python.org/3/tutorial/errors.html>`
 
 Remember that you can always make your own columns by simply subclassing ``csv_schema.columns.base.BaseColumn``::
 
