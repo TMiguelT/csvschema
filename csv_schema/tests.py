@@ -3,6 +3,7 @@
 from builtins import str
 from builtins import object
 import unittest
+from datetime import datetime
 
 from csv_schema.structure.base import BaseCsvStructure
 from csv_schema.structure.set import Cs
@@ -10,70 +11,70 @@ from csv_schema.columns import (
     IntColumn,
     DecimalColumn,
     StringColumn,
+    DateTimeColumn
 )
 
 
 class CsTest(unittest.TestCase):
-
     """Column set tests."""
 
     def test_at_least_one_rule(self):
-        tmp = Cs('a')|Cs('b')
+        tmp = Cs('a') | Cs('b')
 
-        self.assertEqual(tmp({'a': '', 'b':''}), False)
-        self.assertEqual(tmp({'a': 'TEST', 'b':''}), True)
-        self.assertEqual(tmp({'a': '', 'b':'TEST'}), True)
-        self.assertEqual(tmp({'a': 'TEST', 'b':'TEST'}), True)
+        self.assertEqual(tmp({'a': '', 'b': ''}), False)
+        self.assertEqual(tmp({'a': 'TEST', 'b': ''}), True)
+        self.assertEqual(tmp({'a': '', 'b': 'TEST'}), True)
+        self.assertEqual(tmp({'a': 'TEST', 'b': 'TEST'}), True)
 
     def test_only_one_rule(self):
-        tmp = Cs('a')^Cs('b')
+        tmp = Cs('a') ^ Cs('b')
 
-        self.assertEqual(tmp({'a': '', 'b':''}), False)
-        self.assertEqual(tmp({'a': 'TEST', 'b':''}), True)
-        self.assertEqual(tmp({'a': '', 'b':'TEST'}), True)
-        self.assertEqual(tmp({'a': 'TEST', 'b':'TEST'}), False)
+        self.assertEqual(tmp({'a': '', 'b': ''}), False)
+        self.assertEqual(tmp({'a': 'TEST', 'b': ''}), True)
+        self.assertEqual(tmp({'a': '', 'b': 'TEST'}), True)
+        self.assertEqual(tmp({'a': 'TEST', 'b': 'TEST'}), False)
 
     def test_mixed_rules(self):
-        tmp = Cs('a')|Cs('b')^Cs('c')
+        tmp = Cs('a') | Cs('b') ^ Cs('c')
 
-        self.assertEqual(tmp({'a': '', 'b':'', 'c': ''}), False)
-        self.assertEqual(tmp({'a': 'TEST', 'b':'', 'c': ''}), True)
-        self.assertEqual(tmp({'a': 'TEST', 'b':'TEST', 'c': ''}), True)
-        self.assertEqual(tmp({'a': 'TEST', 'b':'TEST', 'c': 'TEST'}), True)
-        self.assertEqual(tmp({'a': '', 'b':'TEST', 'c': 'TEST'}), False)
-        self.assertEqual(tmp({'a': '', 'b':'', 'c': 'TEST'}), True)
-        self.assertEqual(tmp({'a': '', 'b':'TEST', 'c': ''}), True)
-        self.assertEqual(tmp({'a': 'TEST', 'b':'', 'c': 'TEST'}), True)
+        self.assertEqual(tmp({'a': '', 'b': '', 'c': ''}), False)
+        self.assertEqual(tmp({'a': 'TEST', 'b': '', 'c': ''}), True)
+        self.assertEqual(tmp({'a': 'TEST', 'b': 'TEST', 'c': ''}), True)
+        self.assertEqual(tmp({'a': 'TEST', 'b': 'TEST', 'c': 'TEST'}), True)
+        self.assertEqual(tmp({'a': '', 'b': 'TEST', 'c': 'TEST'}), False)
+        self.assertEqual(tmp({'a': '', 'b': '', 'c': 'TEST'}), True)
+        self.assertEqual(tmp({'a': '', 'b': 'TEST', 'c': ''}), True)
+        self.assertEqual(tmp({'a': 'TEST', 'b': '', 'c': 'TEST'}), True)
 
     def test_diffrent_operators_order_mixed_rules(self):
-        tmp = (Cs('a')|Cs('b'))^Cs('c')
+        tmp = (Cs('a') | Cs('b')) ^ Cs('c')
 
-        self.assertEqual(tmp({'a': '', 'b':'', 'c': ''}), False)
-        self.assertEqual(tmp({'a': 'TEST', 'b':'', 'c': ''}), True)
-        self.assertEqual(tmp({'a': 'TEST', 'b':'TEST', 'c': ''}), True)
-        self.assertEqual(tmp({'a': 'TEST', 'b':'TEST', 'c': 'TEST'}), False)
-        self.assertEqual(tmp({'a': '', 'b':'TEST', 'c': 'TEST'}), False)
-        self.assertEqual(tmp({'a': '', 'b':'', 'c': 'TEST'}), True)
-        self.assertEqual(tmp({'a': '', 'b':'TEST', 'c': ''}), True)
-        self.assertEqual(tmp({'a': 'TEST', 'b':'', 'c': 'TEST'}), False)
+        self.assertEqual(tmp({'a': '', 'b': '', 'c': ''}), False)
+        self.assertEqual(tmp({'a': 'TEST', 'b': '', 'c': ''}), True)
+        self.assertEqual(tmp({'a': 'TEST', 'b': 'TEST', 'c': ''}), True)
+        self.assertEqual(tmp({'a': 'TEST', 'b': 'TEST', 'c': 'TEST'}), False)
+        self.assertEqual(tmp({'a': '', 'b': 'TEST', 'c': 'TEST'}), False)
+        self.assertEqual(tmp({'a': '', 'b': '', 'c': 'TEST'}), True)
+        self.assertEqual(tmp({'a': '', 'b': 'TEST', 'c': ''}), True)
+        self.assertEqual(tmp({'a': 'TEST', 'b': '', 'c': 'TEST'}), False)
 
     def test_expected_values_logic(self):
         tmp = Cs('a', b='TEST')
 
-        self.assertEqual(tmp({'a': '', 'b':''}), True)
-        self.assertEqual(tmp({'a': 'A', 'b':''}), False)
-        self.assertEqual(tmp({'a': '', 'b':'TEST'}), False)
-        self.assertEqual(tmp({'a': 'A', 'b':'TEST'}), True)
+        self.assertEqual(tmp({'a': '', 'b': ''}), True)
+        self.assertEqual(tmp({'a': 'A', 'b': ''}), False)
+        self.assertEqual(tmp({'a': '', 'b': 'TEST'}), False)
+        self.assertEqual(tmp({'a': 'A', 'b': 'TEST'}), True)
 
     def test_expected_values_with_operator(self):
-        tmp = Cs('a', a='OK')|Cs('b')
+        tmp = Cs('a', a='OK') | Cs('b')
 
-        self.assertEqual(tmp({'a': '', 'b':''}), True)
-        self.assertEqual(tmp({'a': 'OK', 'b':''}), True)
-        self.assertEqual(tmp({'a': 'NOT OK', 'b':''}), False)
-        self.assertEqual(tmp({'a': '', 'b':'TEST'}), True)
-        self.assertEqual(tmp({'a': 'OK', 'b':'TEST'}), True)
-        self.assertEqual(tmp({'a': 'NOT OK', 'b':'TEST'}), True)
+        self.assertEqual(tmp({'a': '', 'b': ''}), True)
+        self.assertEqual(tmp({'a': 'OK', 'b': ''}), True)
+        self.assertEqual(tmp({'a': 'NOT OK', 'b': ''}), False)
+        self.assertEqual(tmp({'a': '', 'b': 'TEST'}), True)
+        self.assertEqual(tmp({'a': 'OK', 'b': 'TEST'}), True)
+        self.assertEqual(tmp({'a': 'NOT OK', 'b': 'TEST'}), True)
 
     def test_multiple_columns(self):
         tmp = Cs('a', 'b', 'c')
@@ -86,15 +87,13 @@ class CsTest(unittest.TestCase):
         self.assertEqual(tmp({'a': 'OK', 'b': 'OK', 'c': 'OK'}), True)
 
     def test_complex_execution_order(self):
-        tmp = Cs('e')|((Cs('a')|Cs('b'))^Cs('d'))|Cs('c')
+        tmp = Cs('e') | ((Cs('a') | Cs('b')) ^ Cs('d')) | Cs('c')
         tmp_exe_order = ' '.join([str(obj) for obj in tmp.exe_order])
         self.assertEqual(tmp_exe_order, "('e',) ('a',) ('b',) | ('d',) ^ | ('c',) |")
 
 
 class BasicUseCaseTest(unittest.TestCase):
-
     class TestCsvStructure(BaseCsvStructure):
-
         no_of_things = IntColumn()
         no_of_other_things = IntColumn(blank=True, min_inclusive=100, max_exclusive=300)
         frequency = DecimalColumn(total_digits=3, fraction_digits=2)
@@ -117,10 +116,28 @@ class BasicUseCaseTest(unittest.TestCase):
         self.assertEqual(len(csv_structure.errors), 2)
 
 
+class DateUseCaseTest(unittest.TestCase):
+    class TestCsvStructure(BaseCsvStructure):
+        date = DateTimeColumn(format='%Y%m%d', earliest=datetime(1970, 1, 1), latest=datetime(2070, 1, 1))
+
+    def test_correct_date(self):
+        csv_structure = self.TestCsvStructure(['19800506'], 1)
+        self.assertEqual(csv_structure.is_valid(), True)
+
+    def test_incorrect_format(self):
+        csv_structure = self.TestCsvStructure(['10/05/1980'], 1)
+        self.assertEqual(csv_structure.is_valid(), False)
+
+    def test_too_early(self):
+        csv_structure = self.TestCsvStructure(['19500708'], 1)
+        self.assertEqual(csv_structure.is_valid(), False)
+
+    def test_too_late(self):
+        csv_structure = self.TestCsvStructure(['29500708'], 1)
+        self.assertEqual(csv_structure.is_valid(), False)
+
 class BasicStringUseTestCase(unittest.TestCase):
-
     class TestStringCsvStructure(BaseCsvStructure):
-
         name = StringColumn(blank=True)
         last_name = StringColumn(min_length=3, max_length=30)
         is_programer = StringColumn(permissible_values=['yes', 'no'])
@@ -140,15 +157,13 @@ class BasicStringUseTestCase(unittest.TestCase):
 
 
 class CsUseTestCase(unittest.TestCase):
-
     class TestCsvStructure(BaseCsvStructure):
-
         a = StringColumn(blank=True)
         b = IntColumn(blank=True)
         c = DecimalColumn(blank=True)
 
         class Rules(object):
-            rule_1 = (Cs('a')|Cs('b')).error('A or B')
+            rule_1 = (Cs('a') | Cs('b')).error('A or B')
             rule_2 = Cs('c', b=87)
 
     def test_good_data(self):
@@ -165,6 +180,7 @@ class CsUseTestCase(unittest.TestCase):
         self.assertEqual(csv_structure.is_valid(), False)
         self.assertEqual(len(csv_structure.errors), 1)
         self.assertEqual(csv_structure.errors[0], 'Line 1: A or B')
+
 
 if __name__ == '__main__':
     unittest.main()

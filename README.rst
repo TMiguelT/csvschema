@@ -2,12 +2,12 @@
 CsvSchema
 ==========
 
-CsvSchema is easy to use module designed to make CSV file checking easier. It allows to create more complex validation rules faster thanks to
-some predefined building blocks.
+CsvSchema is an easy to use module designed to make CSV file checking easier. It allows for the fast creation of complex
+validation rules faster using some predefined building blocks.
 
 Basics
 ------
-Like most similar modules build for CSV file checking CsvSchema allows you to describe how proper file should look like.
+Fundamentally, CsvSchema allows you to describe what a correct CSV file should look like.
 In order to do that you will need to implement a subclass of ``csv_schema.structure.BaseCsvStructure``.
 
 Example::
@@ -25,11 +25,11 @@ Example::
      b = IntColumn()
      c = DecimalColumn()
 
-In above example we defined CSV schema class that represents file with three columns. First column may contain any kind of characters.
-Second allows only numerical values and third one may contain only decimal values.
+In the example above, we defined a CSV schema class that represents a file with three columns. The first column may
+contain any kind of characters, the second allows only numerical values, and third one may contain only decimal values.
 
 **NOTE**:
-   Order of attributes in schema class is important. If you put ``b`` before ``a`` then column ``b`` in CSV file will be the first one.
+   The order of attributes in the schema class is important. If you put ``b`` before ``a`` then column ``b`` in CSV file will be the first one.
    Of course this will change validation and first column will no longer allow values like e.g ``'Python'``
 
 After defining your schema you can use it like this::
@@ -37,7 +37,8 @@ After defining your schema you can use it like this::
    schema = TestCsvStructure(['A', '6', ''], 1)
    schema.is_valid()
 
-First constructor parameter is a list of data representing single line form CSV file. Second is a position in file from which it was taken.
+The first constructor parameter is a list of data representing a single line form CSV file. The second is its position in
+ the file from which it was taken.
 
 **NOTE**:
    You can use whatever CSV reading method you like. Just make sure that each CSV line is transformed into list.
@@ -92,6 +93,15 @@ There are three types of columns. Their behavior can be altered by some addition
 **NOTE**:
    ``DecimalColumn`` operates on ``decimal.Decimal`` objects. Have that in mind when you will be setting ``min_exclusive``, ``max_exclusive``,
    ``min_inclusive`` or ``max_inclusive``.
+
+:DateTimeColumn([earliest, latest, format]):
+   - earliest
+       The earliest date this column will accept, inclusive
+  - latest
+      The latest date this column will accept, inclusive
+   - format
+       The datetime format string indicating what kind of date is valid. Refer to the
+       `datetime.strptime documentation <https://docs.python.org/3/tutorial/errors.html>`
 
 Remember that you can always make your own columns by simply subclassing ``csv_schema.columns.base.BaseColumn``::
 

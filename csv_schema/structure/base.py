@@ -55,7 +55,7 @@ class BaseCsvStructure(with_metaclass(BaseCsvStructureMeta, object)):
             try:
                 self.columns[self.column_order[index]] = column_obj.clean(raw_val)
             except (ImproperValueException, ImproperValueRestrictionException) as e:
-                self.errors.append(u'Line %d, column %d: %s' % (self.line_no, index, e.message))
+                self.errors.append(u'Line %d, column %d: %s' % (self.line_no, index, str(e)))
 
     def _extract_rules(self):
         """Search self.Rules for defined schema rules.
